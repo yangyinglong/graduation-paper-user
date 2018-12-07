@@ -1,17 +1,23 @@
 <template>
-  <div class="hello">
-    <button @click="login">登录</button>
-    <p>{{msg}}</p>
+  <div class="home-carousel">
+    <!-- <el-carousel indicator-position="outside" class="hello">
+      <el-carousel-item v-for="item in 4" :key="item">
+        <h3>{{ item }}</h3>
+      </el-carousel-item>
+    </el-carousel> -->
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'Home',
   data () {
     return {
       msg: 'name'
     }
+  },
+  created(){
+    console.log(this.GLOBAL.authorizeView)
   },
   methods: {
     login(){
@@ -31,18 +37,29 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
+.home-carousel {
+  height: 530px;
+  width: 100%;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.hello {
+  height: 100%;
+  width: 80%;
+  margin: 0 auto;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 18px;
+  opacity: 0.75;
+  line-height: 300px;
+  margin: 0;
 }
-a {
-  color: #42b983;
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n+1) {
+  background-color: #d3dce6;
 }
 </style>
