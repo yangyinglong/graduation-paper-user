@@ -9,15 +9,14 @@
 			<div class="head-nav">
 				<ul>
 					<li style="margin-top: -1px">
-						<Login />
+						<Login v-on:changeStatus="login"/>
 					</li>
 					<li class="nav-pile">|</li>
 					<li v-if="loginStatus===0">
 						<router-link to="/register" style="text-decoration: none;">注册</router-link>
 					</li>
 					<li v-else>
-						<!-- <router-link to="/" style="text-decoration: none;" @click="logout">退出</router-link> -->
-						<Logout />
+						<Logout v-on:changeStatus="logout"/>
 					</li>
 					<li class="nav-pile">|</li>
 					<li>关于</li>
@@ -35,17 +34,46 @@ export default{
 	name:"myHeader",
 	data(){
 		return{
-
+			Login: {
+				userName: '登录',
+				status: 0
+			},
+			loginStatus: 0
 		}
 	},
-	computed: {
-		loginStatus() {
-			return this.$store.state.loginStatus
-		}
+	// computed: {
+	// 	loginStatus() {
+	// 		if (sessionStorage.getItem('status') == '1') {
+	// 			return parseInt(sessionStorage.getItem('status'))
+	// 		}
+	// 		return 0
+	// 	}
+	// },
+	created(){
+		this.getNameFromSession()
 	},
 	components: {
 		Login,
 		Logout
+	},
+	methods: {
+		getNameFromSession() {
+			if (sessionStorage.getItem('status') == '1') {
+				this.loginStatus = parseInt(sessionStorage.getItem('status'))
+				this.$store.state.userName = sessionStorage.getItem('userName')
+				this.$store.state.loginStatus = sessionStorage.getItem('status')
+			} else {
+				this.$store.state.userName = '登录',
+				this.Login.status = 0
+			}	
+		},
+		login(data) {
+			this.loginStatus = data
+		},
+		logout(data) {
+			this.loginStatus = data
+			this.$store.dispatch("logout")
+		}
 	}
 }
 </script>

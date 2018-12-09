@@ -16,13 +16,13 @@
 			<el-form-item label="确认密码：" prop="checkPass">
 				<el-input type="password" v-model="registerData.checkPass" autocomplete="off"></el-input>
 			</el-form-item>
-			<el-form-item label="验证码：" prop="validatecode">
-				<el-input v-model.number="registerData.validatecode" autocomplete="off" placeholder="请输入验证码">
+			<el-form-item label="验证码：" prop="validateCode">
+				<el-input v-model.number="registerData.validateCode" autocomplete="off" placeholder="请输入验证码">
 					<div v-if="!sendMsgDisabled" slot="append" @click="sendSms(registerData.phone)" style="width: 100px">{{sendVali}}</div>
 					<div v-if="sendMsgDisabled" slot="append" style="width: 100px">{{time+'秒后获取'}}</div>
 				</el-input>
 				<br>
-				<el-checkbox v-model="checked">阅读并接受<u>《杭电实验室协议》</u></el-checkbox>
+				<el-checkbox v-model="registerData.checked">阅读并接受<u>《杭电实验室协议》</u></el-checkbox>
 				<br><br>
 				<el-button style="width:310px; float: right; background-color: #d7d7d7;" @click="register('registerData')">
 				注册
@@ -49,7 +49,7 @@
 			var validatePass2 = (rule, value, callback) => {
 				if (value === '') {
 					callback(new Error('请再次输入密码'));
-				} else if (value !== this.registerData.pass) {
+				} else if (value !== this.registerData.password) {
 					callback(new Error('两次输入密码不一致!'));
 				} else {
 					callback();
@@ -62,9 +62,10 @@
 					phone: '',
 					password: '',
 					checkPass: '',
-					validateCode: ''
+					validateCode: '',		
+					checked: false,
 				},
-				checked: false,
+				validateCodeId: '',
 				rules: {
 					studentId:[
 						{required: true, message: '学号不能为空', trigger: 'blur'},
@@ -85,7 +86,7 @@
 					],
 					validateCode: [
 						{required: true, message: '短信验证码不能为空', trigger: 'blur'}
-					]
+					],
 				},
 				sendMsgDisabled: false,
 				time: 60,
@@ -93,14 +94,12 @@
 			}
 		},
 		created() {
-			// this.GLOBAL.authorizeView = true
-			this.GLOBAL.setAuthorizeView(true)
-			console.log(this.GLOBAL.authorizeView)
 		},
 		methods:{
 			sendSms(phone){
 				if (phone.length === 11) {
 					// 调用后端发送短信接口
+					this.validateCodeId = '100001'
 					this.$message.success('已发送验证码！请查看手机。')
 					let me = this
 					me.sendMsgDisabled = true
@@ -117,7 +116,43 @@
 				}
 			},
 			register(registerData){
-				
+				if (this.registerData.checked === false) {
+					this.$message.error('请阅读协议！')
+					return
+				}
+				this.$refs[registerData].validate((valid) => {
+					if (valid) {
+						var registerFormData = {
+							id: this.registerData.studentId,
+							name: this.registerData.name,
+							phone: this.registerData.phone,
+							password: this.registerData.password,
+							validateCode: this.registerData.validateCode,
+							validateCodeId: this.validateCodeId
+						}
+						this.$http.Register(registerFormData).then((result) => {
+							if (result.c === 200) {
+								this.$message({
+									message: '注册成功，请登录',
+									type: 'success'
+								});
+								this.$router.push({name: 'Home', params: {}})
+							} else if (result.c === 201) {
+								this.$message.warning(result.r)
+								this.$router.push({name: 'Home', params: {}})
+							} else {
+								this.$message.warning(result.r)
+							}
+						}, (err) => {
+							this.$message.error(err.msg)
+						})					
+					} else {
+						this.$alert('请完善注册信息', {
+							dangerouslyUseHTMLString: true,
+							showClose: false
+						})
+					}
+				});	
 			}
 		}
 	}

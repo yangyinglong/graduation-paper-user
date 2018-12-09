@@ -55,7 +55,6 @@ axios.interceptors.response.use((res) => {
 
 // 返回一个Promise(发送post请求)
 export function fetch(url, params) {
-  console.log(url)
   return new Promise((resolve, reject) => {
     axios.post(url, params).then(response => {
       resolve(response)
@@ -80,5 +79,8 @@ export default {
 
   Login(params) {
     return fetch('/authorize/login', params)
+  },
+  Register(params) {
+    return fetch('/authorize/register', params)
   }
 }

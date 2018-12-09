@@ -26,7 +26,7 @@
         <div style="height: 90px"></div>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogLoginVisible = false">取 消</el-button>
-          <el-button type="primary" @click="loginData">确 定</el-button>
+          <el-button type="primary" @click="login('loginform')">确 定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -39,12 +39,6 @@
 </template>
 
 <script>
-  // eslint-disable-next-line indent
-  /* eslint-disable indent,indent,space-before-function-paren,no-unused-vars */
-
-  // import $ from '@/api/axios.js';
-  // import Qs from 'qs';
-
   export default {
     name: 'Login',
     data() {
@@ -67,8 +61,9 @@
           rememberPassword: false,
           checkPass: ''
         },
+        // loginStatus: this.status,
+        // userName: this.userNamed,
         loading: false,
-        // loginStatus: 0,
         rules: {
           name: [
             {required: true, message: '账号不能为空', trigger: 'blur'},
@@ -80,68 +75,62 @@
         }
       }
     },
-    computed: {
-      loginStatus() {
-        return this.$store.state.loginStatus
-      },
-      userName() {
-        return this.$store.state.userName
-      }
-    },
     mounted() {
       this.getCookie()
     },
+    computed: {
+      userName() {
+        return this.$store.state.userName
+      },
+      loginStatus() {
+        return this.$store.state.loginStatus
+      }
+    },
     methods: {
-      loginData: function () {
-        var loginFormData = {
-          username: this.loginform.name,
-          password: this.loginform.password,
-          rememberPassword: this.loginform.rememberPassword
-        }
-        sessionStorage.setItem('userId', '15200126')
-        sessionStorage.setItem('userName', 'Bob')
-        sessionStorage.setItem('phone', '15968161237')
-        sessionStorage.setItem('status', '1')
-        sessionStorage.setItem('createTime', '1010010')
-		this.$message({
-			message: '欢迎您，' + 'Bob' + '!',
-			type: 'success'
-		});
-		this.setCookie(this.loginform.name, this.loginform.password, 7, this.loginform.rememberPassword)
-		this.$store.state.userName = 'Bob'
-		this.$store.state.loginStatus = 1
-		this.dialogLoginVisible = false
-		this.$router.push({name: 'Home', params: {}})
-
-        // this.$http.Login(loginFormData).then((result) => {
-        //   // sessionStorage.setItem('userId', result.r.userId)
-        //   // sessionStorage.setItem('userName', result.r.userName)
-        //   // sessionStorage.setItem('phone', result.r.phone)
-        //   // sessionStorage.setItem('status', result.r.status)
-        //   // sessionStorage.setItem('createTime', result.r.createTime)
-        //   if (result.c === 200) {
-        //     this.$store.dispatch('login', result.r).then(() => {
-        //       this.$message({
-        //         message: '欢迎您，' + result.r.userName + '!',
-        //         type: 'success'
-        //       });
-        //     })
-        //     this.setCookie(this.loginform.name, this.loginform.password, 7, this.loginform.rememberPassword)
-        //     this.dialogLoginVisible = false
-
-        //   } else {
-        //     // this.$message.warning("登录失败，请确认用户名和密码。")
-        //     this.dialogLoginVisible = true // todo
-        //     this.$alert('账号或密码错误，请重新输入', {
-        //       dangerouslyUseHTMLString: true,
-        //       callback: this.clearPass, //关闭后的回调函数
-        //       showClose: false
-        //     });
-        //   }
-        // }, (err) => {
-        //   this.$message.error(err.msg)
-        //   // this.searchLoading = false
-        // })
+      login: function (loginform) {
+        this.$refs[loginform].validate((valid) => {
+          if (valid) {
+            var loginFormData = {
+              id: this.loginform.name,
+              password: this.loginform.password,
+            }
+            this.$http.Login(loginFormData).then((result) => {
+              if (result.c === 200) {
+                sessionStorage.setItem('userId', result.r.id)
+                sessionStorage.setItem('userName', result.r.name)
+                sessionStorage.setItem('phone', result.r.phone)
+                sessionStorage.setItem('status', result.r.status)
+                this.$emit("changeStatus", result.r.status)
+                this.$store.dispatch('login', result.r).then(() => {
+                  this.$message({
+                    message: '欢迎您，' + result.r.name + '!',
+                    type: 'success'
+                  });
+                })
+                this.setCookie(this.loginform.name, this.loginform.password, 7, this.loginform.rememberPassword)
+                this.$store.state.userName = result.r.name
+                this.$store.state.loginStatus = result.r.status
+                this.dialogLoginVisible = false
+              } else {
+                // this.$message.warning("登录失败，请确认用户名和密码。")
+                this.dialogLoginVisible = true // todo
+                this.$alert('账号或密码错误，请重新输入', {
+                  dangerouslyUseHTMLString: true,
+                  callback: this.clearPass,
+                  showClose: false
+                });
+              }
+            }, (err) => {
+              this.$message.error(err.msg)
+            })        
+            this.$router.push({name: 'Home', params: {}})
+          } else {
+            this.$alert('请输入账号和密码', {
+              dangerouslyUseHTMLString: true,
+              showClose: false
+            })
+          }
+        });
       },
       clearPass(){
         this.loginform.password = ''
@@ -158,7 +147,7 @@
       getCookie: function() {
           if (document.cookie.length > 0) {
               var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下
-              for (var i = 0; i < arr.length; i++) {
+              for (var i = 1; i < arr.length; i++) {
                   var arr2 = arr[i].split('='); //再次切割
                   //判断查找相对应的值
                   if (arr2[0] == 'userName') {

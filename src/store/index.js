@@ -18,6 +18,9 @@ const store = new Vuex.Store({
     },
     phone (state) {
       return state.phone
+    },
+    loginStatus (state) {
+      return state.loginStatus
     }
   },
   // 修改全局变量必须通过mutations中的方法

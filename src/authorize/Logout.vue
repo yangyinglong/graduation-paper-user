@@ -33,19 +33,26 @@
     },
     methods: {
       logout: function () {
-        sessionStorage.clear()
-        this.$store.dispatch('logout').then(() => {
-          this.$notify({
-            type: 'success',
-            message: '再见!',
-            duration: 1000
+        this.$confirm('是否退出登录', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          sessionStorage.clear()
+          this.$emit("changeStatus", 0)
+          this.$store.dispatch('logout').then(() => {
+            if (this.loginform.rememberPassword === false) {
+              console.log("this " + this.loginform.rememberPassword)
+              this.clearCookie()
+            }
+            this.$router.replace('/')
           })
-          if (this.loginform.rememberPassword === false) {
-            console.log("this " + this.loginform.rememberPassword)
-            this.clearCookie()
-          }
-          this.$router.replace('/')
-        })
+          this.$message({
+            type: 'success',
+            message: '再见!'
+          });
+        }).catch(() => {         
+        });        
       },
       //读取cookie
       getCookie: function() {
@@ -68,7 +75,7 @@
               }
           }
       },
-      setCookie(c_name, c_pwd, exdays, remeberFlag) {
+      setCookie(c_name, c_pwd, exdays, remeberFlag, status) {
         var exdate = new Date(); //获取时间
         exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
         //字符串拼接cookie
@@ -78,7 +85,7 @@
       }, 
       //清除cookie
       clearCookie: function() {
-         this.setCookie("", "", -1, ""); //修改2值都为空，天数为负1天就好了
+         this.setCookie("", "", -1, "", 0); //修改2值都为空，天数为负1天就好了
       }
     }
   }
