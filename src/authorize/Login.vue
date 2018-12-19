@@ -19,8 +19,8 @@
           <div style="float: left">
             <el-checkbox v-model="loginform.rememberPassword">记住密码</el-checkbox>
           </div>
-          <router-link to="/forgetPasswd">
-            <div style="float: right">忘记密码</div>
+          <router-link to="/forgotPass">
+            <div style="float: right" @click="dialogLoginVisible = false">忘记密码</div>
           </router-link>
         </div>
         <div style="height: 90px"></div>
@@ -32,7 +32,7 @@
     </div>
     <!-- todo -->
     <div v-else>
-      <router-link to="/userCenter" style="text-decoration: none;"><b class="linked">{{userName}}</b></router-link>
+      <router-link to="/usercenter" style="text-decoration: none;"><b class="linked">{{userName}}</b></router-link>
     </div>
   </div>
 
@@ -100,7 +100,8 @@
                 sessionStorage.setItem('userName', result.r.name)
                 sessionStorage.setItem('phone', result.r.phone)
                 sessionStorage.setItem('status', result.r.status)
-                this.$emit("changeStatus", result.r.status)
+                sessionStorage.setItem('eMail', result.r.eMail)
+                // this.$emit("changeStatus", result.r.status)
                 this.$store.dispatch('login', result.r).then(() => {
                   this.$message({
                     message: '欢迎您，' + result.r.name + '!',

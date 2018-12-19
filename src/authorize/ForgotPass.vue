@@ -1,32 +1,25 @@
 <template>
-	<div class="register-main">
-		<el-form label-position='left' :model="registerData" status-icon :rules="rules" ref="registerData" label-width="100px" class="demo-ruleForm">
+	<div class="forgot-main">
+		<el-form label-position='left' :model="forgotPassData" status-icon :rules="rules" ref="forgotPassData" label-width="100px" class="demo-ruleForm">
 			<br><br>
-			<el-form-item label="学号：" prop="studentId">
-            	<el-input v-model="registerData.studentId" placeholder="用户登录"></el-input>
-            </el-form-item>
-            <el-form-item label="姓名：" prop="name">
-            	<el-input v-model="registerData.name" placeholder="请输入姓名"></el-input>
-            </el-form-item>
             <el-form-item label="手机号码：" prop="phone">
-            	<el-input v-model="registerData.phone" placeholder="用户登录和找回密码"></el-input>
+            	<el-input v-model="forgotPassData.phone" placeholder="请输入手机号码"></el-input>
             </el-form-item>
 			<el-form-item label="密码：" prop="password">
-				<el-input type="password" v-model="registerData.password" autocomplete="off"></el-input>
+				<el-input type="password" v-model="forgotPassData.password" autocomplete="off"></el-input>
 			</el-form-item>
 			<el-form-item label="确认密码：" prop="checkPass">
-				<el-input type="password" v-model="registerData.checkPass" autocomplete="off"></el-input>
+				<el-input type="password" v-model="forgotPassData.checkPass" autocomplete="off"></el-input>
 			</el-form-item>
 			<el-form-item label="验证码：" prop="validateCode">
-				<el-input v-model.number="registerData.validateCode" autocomplete="off" placeholder="请输入验证码">
-					<div v-if="!sendMsgDisabled" slot="append" @click="sendSms(registerData.phone)" style="width: 100px">{{sendVali}}</div>
+				<el-input v-model.number="forgotPassData.validateCode" autocomplete="off" placeholder="请输入验证码">
+					<div v-if="!sendMsgDisabled" slot="append" @click="sendSms(forgotPassData.phone)" style="width: 100px">{{sendVali}}</div>
 					<div v-if="sendMsgDisabled" slot="append" style="width: 100px">{{time+'秒后获取'}}</div>
 				</el-input>
 				<br>
-				<el-checkbox v-model="registerData.checked">阅读并接受<u>《杭电实验室协议》</u></el-checkbox>
 				<br><br>
-				<el-button style="width:310px; float: right; background-color: #d7d7d7;" @click="register('registerData')">
-				注册
+				<el-button style="width:310px; float: right; background-color: #d7d7d7;" @click="forgotPass('forgotPassData')">
+				确认修改
 				</el-button>
 			</el-form-item>
 		</el-form>
@@ -35,14 +28,14 @@
 
 <script>
 	export default{
-		name: 'Register',
-		data(){
+		name: 'ForgotPass',
+		data() {
 			var validatePass = (rule, value, callback) => {
 				if (value === '') {
 					callback(new Error('请输入密码'));
 				} else {
-					if (this.registerData.checkPass !== '') {
-						this.$refs.registerData.validateField('checkPass');
+					if (this.forgotPassData.checkPass !== '') {
+						this.$refs.forgotPassData.validateField('checkPass');
 					}
 				callback();
 				}
@@ -50,31 +43,21 @@
 			var validatePass2 = (rule, value, callback) => {
 				if (value === '') {
 					callback(new Error('请再次输入密码'));
-				} else if (value !== this.registerData.password) {
+				} else if (value !== this.forgotPassData.password) {
 					callback(new Error('两次输入密码不一致!'));
 				} else {
 					callback();
 				}
 			};
-			return{
-				registerData: {
-					studentId: '',
-					name: '',
+			return {
+				forgotPassData: {
 					phone: '',
 					password: '',
 					checkPass: '',
-					validateCode: '',		
-					checked: false,
+					validateCode: '',
 				},
 				validateCodeId: '',
 				rules: {
-					studentId:[
-						{required: true, message: '学号不能为空', trigger: 'blur'},
-			            {min: 8, max: 8, message: '学号长度为8位数字值', trigger: 'blur'}
-					],
-					name:[
-						{required: true, message: '姓名不能为空', trigger: 'blur'}
-					],
 					phone: [
 			            {required: true, message: '手机号码不能为空', trigger: 'blur'},
 			            {min: 11, max: 11, message: '手机号码长度为11位数字值', trigger: 'blur'}
@@ -94,9 +77,7 @@
 				sendVali: '获取短信验证码'
 			}
 		},
-		created() {
-		},
-		methods:{
+		methods: {
 			sendSms(phone){
 				if (phone.length === 11) {
 					// 调用后端发送短信接口
@@ -116,30 +97,28 @@
 					this.$message.error('请填写正确的手机号码')
 				}
 			},
-			register(registerData){
-				if (this.registerData.checked === false) {
-					this.$message.error('请阅读协议！')
-					return
-				}
-				this.$refs[registerData].validate((valid) => {
+			forgotPass(forgotPassData){
+				this.$refs[forgotPassData].validate((valid) => {
 					if (valid) {
-						var registerFormData = {
-							id: this.registerData.studentId,
-							name: this.registerData.name,
-							phone: this.registerData.phone,
-							password: this.registerData.password,
-							validateCode: this.registerData.validateCode,
+						var forgotPassFormData = {
+							phone: this.forgotPassData.phone,
+							password: this.forgotPassData.password,
+							validateCode: this.forgotPassData.validateCode,
 							validateCodeId: this.validateCodeId
 						}
-						this.$http.Register(registerFormData).then((result) => {
+						this.$http.ForgorPass(forgotPassFormData).then((result) => {
 							if (result.c === 200) {
+								sessionStorage.setItem('userId', result.r.id)
+				                sessionStorage.setItem('userName', result.r.name)
+				                sessionStorage.setItem('phone', result.r.phone)
+				                sessionStorage.setItem('status', result.r.status)
+				                this.$store.state.loginStatus = sessionStorage.getItem('status')
+				                this.$store.state.userName = sessionStorage.getItem('userName')
+				                this.setCookie(result.r.id, this.forgotPassData.password, 7, true)
 								this.$message({
-									message: '注册成功，请登录',
+									message: '密码修改成功！',
 									type: 'success'
 								});
-								this.$router.push({name: 'Home', params: {}})
-							} else if (result.c === 201) {
-								this.$message.warning(result.r)
 								this.$router.push({name: 'Home', params: {}})
 							} else {
 								this.$message.warning(result.r)
@@ -153,15 +132,23 @@
 							showClose: false
 						})
 					}
-				});	
-			}
+				})
+			},
+			setCookie(c_name, c_pwd, exdays, remeberFlag) {
+				var exdate = new Date(); //获取时间
+				exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
+				//字符串拼接cookie
+				window.document.cookie = "userName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
+				window.document.cookie = "userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
+				window.document.cookie = "remeberFlag" + "=" + remeberFlag + ";path=/;expires=" + exdate.toGMTString();
+			}, 
 		}
+
 	}
-	
 </script>
 
 <style scoped>
-	.register-main{
+	.forgot-main{
 		width: 400px;
 		height: 530px;
 		margin: 0 auto;

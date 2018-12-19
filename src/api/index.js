@@ -82,5 +82,32 @@ export default {
   },
   Register(params) {
     return fetch('/authorize/register', params)
+  },
+  ForgorPass(params) {
+    return fetch('/authorize/forgotPass', params)
+  },
+  EditUser(params) {
+    return fetch('/authorize/editUser', params)
+  },
+  ShowLaboratory(params) {
+    return fetch('/laboratory/showLaboratory', params)
+  },
+  ShowLabNum(params) {
+    return fetch('/laboratory/showLabNum', params)
+  },
+  AddOrder(params) {
+    return fetch('/order/addOrder', params)
+  },
+  ShowOrder(params) {
+    return fetch('/order/showOrder', params)
+  },
+  ShowOrderNum(params) {
+    return fetch('/order/showOrderNum', params)
+  },
+  EditOrder(params) {
+    return fetch('/order/editOrder', params)
+  },
+  ShowLabBespeak(params) {
+    return fetch('/order/showOrderBespeakTime', params)
   }
 }

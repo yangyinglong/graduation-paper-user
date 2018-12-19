@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <!-- <b style="color: #999999;">&nbsp|&nbsp</b> -->
-    <router-link to="/" style="text-decoration: none;"><b class="linked" @click="logout">退出</b></router-link>
+    <router-link to="" style="text-decoration: none;"><b class="linked" @click="logout">退出</b></router-link>
   </div>
 
 </template>
@@ -39,7 +39,7 @@
           type: 'warning'
         }).then(() => {
           sessionStorage.clear()
-          this.$emit("changeStatus", 0)
+          // this.$emit("changeStatus", 0)
           this.$store.dispatch('logout').then(() => {
             if (this.loginform.rememberPassword === false) {
               console.log("this " + this.loginform.rememberPassword)

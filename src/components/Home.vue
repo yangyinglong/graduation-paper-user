@@ -5,6 +5,7 @@
         <h3>{{ item }}</h3>
       </el-carousel-item>
     </el-carousel> -->
+    <button type="text" @click="toBespeak" class="button button-block button-rounded button-large" style="display:inline-block;position: absolute; top: 50%; left: 45%">点击预约</button>
   </div>
 </template>
 
@@ -19,16 +20,16 @@ export default {
   created(){
   },
   methods: {
-    login(){
-      this.$http.Login("Bob").then((result) => {
-        if (result.c === 200) {
-          this.msg = result.r
-        } else {
-          this.msg = "登录失败"
-        }
-      }, (err) => {
-        this.$message.error(err.msg)
-      })
+    toBespeak() {
+      if (this.$store.state.loginStatus == 1) {
+        this.$router.push({name: 'Center', params: {}})
+      } else {
+        this.$notify.success({
+          title: 'Info',
+          message: '请先登录或注册！',
+          position: 'top-left'
+        })
+      }
     }
   }
 
@@ -39,26 +40,53 @@ export default {
 .home-carousel {
   height: 530px;
   width: 100%;
-}
-
-.hello {
-  height: 100%;
-  width: 80%;
   margin: 0 auto;
 }
-.el-carousel__item h3 {
-  color: #475669;
-  font-size: 18px;
-  opacity: 0.75;
-  line-height: 300px;
+
+.button {
+  color: #666;
+  background-color: #EEE;
+  border-color: #EEE;
+  font-weight: 300;
+  font-size: 16px;
+  font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  text-decoration: none;
+  text-align: center;
+  line-height: 40px;
+  height: 40px;
+  padding: 0 40px;
   margin: 0;
+  display: inline-block;
+  appearance: none;
+  cursor: pointer;
+  border: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition-property: all;
+  transition-property: all;
+  -webkit-transition-duration: .3s;
+  transition-duration: .3s;
+  /*
+  * Disabled State
+  *
+  * The disabled state uses the class .disabled, is-disabled,
+  * and the form attribute disabled="disabled".
+  * The use of !important is only added because this is a state
+  * that must be applied to all buttons when in a disabled state.
+  */ 
 }
-
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
+.button-block,
+.button-stacked {
+  display: block;
 }
-
-.el-carousel__item:nth-child(2n+1) {
-  background-color: #d3dce6;
+.button-rounded {
+  border-radius: 4px; 
+}
+.button-large {
+  font-size: 20px;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 50px;
 }
 </style>

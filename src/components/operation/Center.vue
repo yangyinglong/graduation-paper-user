@@ -1,0 +1,41 @@
+<template>
+	<div class="labcenter-main">
+		<el-tabs type="border-card" style="min-height: 530px; min-width: 11
+		00px" :value="tagPage">
+			<el-tab-pane label="实验室中心" name="labcenter"><LabCenter /></el-tab-pane>
+			<el-tab-pane label="订单中心" name="ordercenter"><OrderCenter /></el-tab-pane>
+		</el-tabs>
+	</div>
+</template>
+
+<script>
+import LabCenter from '@/components/operation/center/LabCenter'
+import OrderCenter from '@/components/operation/center/OrderCenter'
+export default {
+	name: 'Center',
+	data () {
+		return {
+			tagPage: 'labcenter'
+		}
+	},
+	created(){
+		if (this.$route.params.tagP) {
+			this.tagPage = this.$route.params.tagP
+		}
+	},
+	methods: {
+	},
+	components: {
+		LabCenter,
+		OrderCenter
+	},
+}		
+</script>
+
+<style scoped>
+	.labcenter-main{
+		width: 70%;
+		min-width: 1100px;
+		margin: 0 auto;
+	}
+</style>
