@@ -122,9 +122,9 @@ export default {
 		queryLabNum() {
 			this.queryData.page = 1
 			var submitData ={
-				labName: this.queryData.labName == '' ? '' : '%'+this.queryData.labName+'%',
-				labAddress: this.queryData.labAddress == '' ? '' : '%'+this.queryData.labAddress+'%',
-				adminName: this.queryData.labAdmin == '' ? '' : '%'+this.queryData.labAdmin+'%',
+				labName: this.queryData.labName == '' ? '%' : '%'+this.queryData.labName+'%',
+				labAddress: this.queryData.labAddress == '' ? '%' : '%'+this.queryData.labAddress+'%',
+				adminName: this.queryData.labAdmin == '' ? '%' : '%'+this.queryData.labAdmin+'%',
 				page: this.queryData.page
 			}
 			this.setSession()			
@@ -145,9 +145,9 @@ export default {
 		},
 		queryLab(){
 			var submitData ={
-				labName: this.queryData.labName == '' ? '' : '%'+this.queryData.labName+'%',
-				labAddress: this.queryData.labAddress == '' ? '' : '%'+this.queryData.labAddress+'%',
-				adminName: this.queryData.labAdmin == '' ? '' : '%'+this.queryData.labAdmin+'%',
+				labName: this.queryData.labName == '' ? '%' : '%'+this.queryData.labName+'%',
+				labAddress: this.queryData.labAddress == '' ? '%' : '%'+this.queryData.labAddress+'%',
+				adminName: this.queryData.labAdmin == '' ? '%' : '%'+this.queryData.labAdmin+'%',
 				page: this.queryData.page
 			}	
 			this.setSession()

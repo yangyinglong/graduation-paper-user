@@ -54,7 +54,7 @@ export default{
 	},
 	methods: {
 		getNameFromSession() {
-			if (sessionStorage.getItem('status') == '1') {
+			if (sessionStorage.getItem('status') == '1' || sessionStorage.getItem('status') == '2') {
 				this.$store.state.userName = sessionStorage.getItem('userName')
 				this.$store.state.loginStatus = parseInt(sessionStorage.getItem('status'))
 			} else {

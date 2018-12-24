@@ -25,7 +25,7 @@
 				<el-table-column fixed="right" label="操作" width="100">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="showDetails(scope.$index, scope.row)">查看</el-button>
-					<el-button type="text" size="small" @click="beSpeak(scope.$index, scope.row)" v-if="scope.row.status == '已驳回'">修改</el-button>
+					<el-button type="text" size="small" @click="beSpeak(scope.$index, scope.row)" v-if="scope.row.status == '已驳回' || scope.row.status== '待审核'">修改</el-button>
 				</template>
 				</el-table-column>
 			</el-table>
@@ -176,6 +176,7 @@ export default {
 			sessionStorage.setItem('time', row.time)
 			sessionStorage.setItem('remarks', row.remarks)
 			sessionStorage.setItem('adminRemarks', row.adminRemarks)
+			sessionStorage.setItem("orderStatus", row.status)
 			this.$router.push({name: 'OrderShow', params: {orderId: row.id}})
 		},
 		beSpeak(index, row){

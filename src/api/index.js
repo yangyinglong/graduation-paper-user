@@ -107,6 +107,9 @@ export default {
   EditOrder(params) {
     return fetch('/order/editOrder', params)
   },
+  CancelOrder(params) {
+    return fetch('/order/cancelOrder', params)
+  },
   ShowLabBespeak(params) {
     return fetch('/order/showOrderBespeakTime', params)
   }

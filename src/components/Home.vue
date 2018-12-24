@@ -5,6 +5,7 @@
         <h3>{{ item }}</h3>
       </el-carousel-item>
     </el-carousel> -->
+    <button type="text" @click="toBespeak" class="button button-block button-rounded button-large" style="display:inline-block;position: absolute; top: 40%; left: 45%" v-if="this.$store.state.loginStatus === 2">点击审核</button>
     <button type="text" @click="toBespeak" class="button button-block button-rounded button-large" style="display:inline-block;position: absolute; top: 50%; left: 45%">点击预约</button>
   </div>
 </template>
@@ -21,7 +22,7 @@ export default {
   },
   methods: {
     toBespeak() {
-      if (this.$store.state.loginStatus == 1) {
+      if (this.$store.state.loginStatus != 0) {
         this.$router.push({name: 'Center', params: {}})
       } else {
         this.$notify.success({
